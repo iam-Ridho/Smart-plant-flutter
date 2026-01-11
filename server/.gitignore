@@ -1,0 +1,81 @@
+# Dependencies
+node_modules/
+jspm_packages/
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# TypeScript
+*.tsbuildinfo
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Lock files (optional - uncomment jika tidak ingin commit lock files)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Training data & models (optional - tergantung apakah ingin di-commit)
+# ai_training_data.csv
+# model_metadata.json
+# scaler_params.json
+# training_data_export.json
+# models/
+
+# Build logs
+build_log.txt
+
+# Runtime data
+last_watering.json
+*.pid
+*.seed
+*.pid.lock

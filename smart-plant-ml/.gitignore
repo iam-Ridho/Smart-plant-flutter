@@ -1,0 +1,137 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+mlenv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.spyderproject
+.spyproject
+.ropeproject
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Machine Learning specific
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.joblib
+*.ckpt
+*.pth
+*.pt
+*.pb
+*.onnx
+
+# TensorFlow
+*.pb
+checkpoint
+model.ckpt.*
+events.out.tfevents.*
+
+# Logs and visualizations
+*.log
+training_history.png
+*.png
+*.jpg
+*.jpeg
+
+# Data files (uncomment jika tidak ingin commit dataset)
+# *.csv
+# *.json
+# *.txt
+plant_dataset.csv
+
+# Model files (uncomment jika tidak ingin commit trained models)
+# models/
+# *.h5
+# model_metadata.json
+# scaler_params.json
+
+# Backup files
+*.backup
+*.bak
+*~

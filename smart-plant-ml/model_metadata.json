@@ -1,0 +1,27 @@
+{
+  "model_version": "1.0.0",
+  "created_at": "2025-12-12T11:12:01.637870",
+  "training_samples": 2400,
+  "test_samples": 600,
+  "accuracy": 0.9649999737739563,
+  "precision": 0.9779735803604126,
+  "recall": 0.9758241772651672,
+  "loss": 0.07600336521863937,
+  "features": [
+    "moisture",
+    "hour",
+    "days_since_water",
+    "temperature",
+    "air_humidity"
+  ],
+  "input_shape": [
+    1,
+    5
+  ],
+  "output_shape": [
+    1,
+    1
+  ],
+  "threshold": 0.5,
+  "model_type": "binary_classification"
+}

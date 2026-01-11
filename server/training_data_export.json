@@ -1,0 +1,79 @@
+{
+  "exported_at": "2025-12-17T07:36:16.542Z",
+  "total_samples": 6,
+  "plant_name": "tomat",
+  "data": [
+    {
+      "moisture": 93,
+      "hour": 13,
+      "days_since_water": 0.0005173726851851852,
+      "temperature": 25,
+      "air_humidity": 60,
+      "needs_water": 1,
+      "source": "ai_analysis",
+      "plant_name": "kangkung",
+      "ai_confidence": "Perlu Perhatian",
+      "timestamp": "2025-12-17T05:56:32.647Z"
+    },
+    {
+      "moisture": 24,
+      "hour": 14,
+      "days_since_water": 0.0001066550925925926,
+      "temperature": 25,
+      "air_humidity": 60,
+      "needs_water": 1,
+      "source": "ai_analysis",
+      "plant_name": "kangkung",
+      "ai_confidence": "Perlu Perhatian",
+      "timestamp": "2025-12-17T06:10:00.862Z"
+    },
+    {
+      "moisture": 24,
+      "hour": 14,
+      "days_since_water": 0.00005162037037037037,
+      "temperature": 25,
+      "air_humidity": 60,
+      "needs_water": 1,
+      "source": "ai_analysis",
+      "plant_name": "kangkung",
+      "ai_confidence": "Perlu Perhatian (akibat kekurangan air)",
+      "timestamp": "2025-12-17T06:31:11.848Z"
+    },
+    {
+      "moisture": 24,
+      "hour": 14,
+      "days_since_water": 0.0000534375,
+      "temperature": 25,
+      "air_humidity": 60,
+      "needs_water": 1,
+      "source": "ai_analysis",
+      "plant_name": "kangkung",
+      "ai_confidence": "Perlu Perhatian",
+      "timestamp": "2025-12-17T06:45:10.343Z"
+    },
+    {
+      "moisture": 80,
+      "hour": 15,
+      "days_since_water": 0.0004077662037037037,
+      "temperature": 25,
+      "air_humidity": 60,
+      "needs_water": 0,
+      "source": "ai_analysis",
+      "plant_name": "kangkung",
+      "ai_confidence": "Sangat Baik",
+      "timestamp": "2025-12-17T07:07:27.738Z"
+    },
+    {
+      "moisture": 24,
+      "hour": 15,
+      "days_since_water": 0.00005107638888888889,
+      "temperature": 25,
+      "air_humidity": 60,
+      "needs_water": 1,
+      "source": "ai_analysis",
+      "plant_name": "tomat",
+      "ai_confidence": "Perlu Perhatian",
+      "timestamp": "2025-12-17T07:09:02.245Z"
+    }
+  ]
+}

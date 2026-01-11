@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Plant Control</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌱 Smart Plant Control System</h1>
+            <!-- <p>AI akan mengidentifikasi dan memberikan saran khusus untuk tanaman Anda</p> -->
+        </header>
+
+        <div class="dashboard">
+            <!-- Sensor Card -->
+            <div class="card">
+                <h2> Kelembaban Tanah</h2>
+                <div class="moisture-display">
+                    <div class="moisture-value" id="moistureValue">--</div>
+                    <div>Kelembaban Tanah (%)</div>
+                    <div class="moisture-bar">
+                        <div class="moisture-fill" id="moistureFill" style="width: 0%"></div>
+                    </div>
+                    <span class="status-badge" id="statusBadge">Offline</span>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="avgMoisture">--</div>
+                        <div class="stat-label">Rata-rata</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="lastUpdate">--</div>
+                        <div class="stat-label">Update Terakhir</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DHT Sensor Card -->
+            <!-- <div class="card">
+                <h2><span class="icon">🌡️</span> Suhu & Kelembaban Udara</h2>
+                <div class="dht-display">
+                    <div class="dht-sensor-grid">
+                        <div class="dht-sensor-item">
+                            <div class="dht-icon">🌡️</div>
+                            <div class="dht-value" id="temperatureValue">--</div>
+                            <div class="dht-label">Suhu (°C)</div>
+                        </div>
+                        <div class="dht-sensor-item">
+                            <div class="dht-icon">💨</div>
+                            <div class="dht-value" id="humidityValue">--</div>
+                            <div class="dht-label">Kelembaban Udara (%)</div>
+                        </div>
+                    </div>
+                    <div class="dht-status" id="dhtStatus">
+                        <span class="status-badge status-offline">Menunggu data...</span>
+                    </div>
+                </div>
+            </div> -->
+
+            <!-- Watering Status Card - BARU! -->
+            <div class="card">
+                <h2>Status Penyiraman</h2>
+                <div class="watering-display">
+                    <div class="watering-status">
+                        <div class="watering-icon" id="wateringIcon"></div>
+                        <div class="watering-info">
+                            <div class="watering-label">Terakhir Disiram</div>
+                            <div class="watering-time-ago" id="timeAgo">Memuat...</div>
+                            <div class="watering-exact-time" id="exactTime">-</div>
+                        </div>
+                    </div>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="daysSince">-</div>
+                            <div class="stat-label">Hari</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="hoursSince">-</div>
+                            <div class="stat-label">Jam</div>
+                        </div>
+                    </div>
+                    <button class="control-btn btn-primary" onclick="updateWateringNow()" style="margin-top: 15px;">
+                        Tandai Sudah Disiram
+                    </button>
+                </div>
+            </div>
+
+            <!-- ML Prediction -->
+            <div class="card ml-card">
+                <h2> ML Prediction</h2>
+                <div class="ml-prediction-box">
+                    <div class="ml-status" id="mlStatus">
+                        <div class="ml-status-icon"></div>
+                        <div>Menunggu data...</div>
+                    </div>
+                    <div class="ml-details" id="mlDetails" style="display: none;">
+                        <div class="ml-score-display">
+                            <div class="ml-score-value" id="mlScore">0.0</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="mlProgress" style="width: 0%">
+                                    <span id="mlProgressText">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ml-recommendation">
+                            <span class="recommendation-icon"></span>
+                            <span id="mlRecommendationText">Analyzing...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Watering Schedule Prediction -->
+            <div class="card schedule-card">
+                <h2>Prediksi Jadwal Penyiraman</h2>
+                <div class="schedule-prediction-box">
+                    <div class="schedule-status" id="scheduleStatus">
+                        <!-- <div class="schedule-status-icon"></div> -->
+                        <div>Memuat prediksi...</div>
+                    </div>
+                    <div class="schedule-details" id="scheduleDetails" style="display: none;">
+                        <div class="schedule-main-info">
+                            <div class="schedule-time-display">
+                                <div class="schedule-time-value" id="scheduleTimeValue">-</div>
+                                <div class="schedule-time-label" id="scheduleTimeLabel">-</div>
+                            </div>
+                            <div class="schedule-date-display">
+                                <span class="schedule-date-icon"></span>
+                                <span id="scheduleDate">-</span>
+                            </div>
+                        </div>
+                        <div class="schedule-info-grid">
+                            <div class="schedule-info-item">
+                                <span class="info-label">Waktu Tersisa:</span>
+                                <span class="info-value" id="timeUntil">-</span>
+                            </div>
+                            <div class="schedule-info-item">
+                                <span class="info-label">Kelembaban Saat Itu:</span>
+                                <span class="info-value" id="moistureAtTime">-</span>
+                            </div>
+                            <div class="schedule-info-item">
+                                <span class="info-label">Confidence:</span>
+                                <span class="info-value" id="scheduleConfidence">-</span>
+                            </div>
+                        </div>
+                        <div class="schedule-current-status">
+                            <div class="current-status-item">
+                                <span>Status Saat Ini:</span>
+                                <span id="currentPredictionStatus" class="status-badge-small">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Control -->
+            <div class="card">
+                <h2>Kontrol</h2>
+                <div class="toggle-switch">
+                    <span>Mode Otomatis</span>
+                    <label class="switch">
+                        <input type="checkbox" id="autoMode" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <button class="control-btn btn-primary" onclick="waterPlant()">
+                    Siram Sekarang
+                </button>
+                <button class="control-btn btn-danger" onclick="stopPump()">
+                    Stop Pompa
+                </button>
+                <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                    <strong>Status:</strong> <span id="pumpStatus">Mati</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Analysis Card -->
+        <div class="card ai-main-card-large">
+            <div class="ai-header-section">
+                <div class="ai-header-icon"></div>
+                <div>
+                    <h2 class="ai-main-title">AI Plant</h2>
+                    <p class="ai-subtitle">Analisis Cerdas untuk Tanaman Anda</p>
+                </div>
+            </div>
+            
+            <div class="plant-input-section-large">
+                <label for="plantNameInput" class="plant-label-large">
+                    <span class="label-icon"></span>
+                    Apa nama tanaman Anda?
+                </label>
+                <input 
+                    type="text" 
+                    id="plantNameInput" 
+                    class="plant-input-field-large" 
+                    placeholder="Ketik nama tanaman... (Contoh: Tomat, Cabai, Anggrek, Kaktus)"
+                    value="">
+                <p class="plant-hint-large">
+                    <span class="hint-icon"></span>
+                    <strong>Tip:</strong> Cukup tulis nama tanaman, AI akan otomatis mengidentifikasi karakteristik dan memberikan saran perawatan yang spesifik!
+                </p>
+            </div>
+
+            <button class="control-btn btn-ai-large" onclick="getAIAdvice()">
+                <!-- <span class="btn-icon"></span> -->
+                Analisis dengan AI
+                <!-- <span class="btn-arrow">→</span> -->
+            </button>
+
+            <div id="aiResult" class="ai-result-container" style="display: none;">
+                <div class="ai-result-header-large">
+                    <span class="plant-emoji-large" id="plantEmoji"></span>
+                    <div class="plant-info-header">
+                        <h3 id="plantIdentified" class="plant-identified-name">-</h3>
+                        <p class="plant-subtitle-large">Analisis AI untuk tanaman Anda</p>
+                    </div>
+                </div>
+
+                <div class="ai-section-large moisture-section">
+                    <div class="section-header-large">
+                        <span class="section-icon-large"></span>
+                        <strong>Analisis Kelembaban</strong>
+                    </div>
+                    <div class="moisture-box-large">
+                        <p id="moistureAnalysis" class="analysis-text">-</p>
+                        <div class="optimal-range-large">
+                            <span class="range-label">Rentang Optimal:</span>
+                            <span id="optimalRange" class="range-value">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ai-section-large">
+                    <div class="section-header-large">
+                        <span class="section-icon-large"></span>
+                        <strong>Rekomendasi</strong>
+                    </div>
+                    <p class="recommendation-text-large" id="recommendation">-</p>
+                </div>
+
+                <div class="ai-section-large">
+                    <div class="section-header-large">
+                        <span class="section-icon-large"></span>
+                        <strong>Jadwal Penyiraman</strong>
+                    </div>
+                    <p class="schedule-text" id="wateringSchedule">-</p>
+                </div>
+
+                <div class="ai-section-large">
+                    <div class="section-header-large">
+                        <span class="section-icon-large"></span>
+                        <strong>Tips Perawatan</strong>
+                    </div>
+                    <ul id="careTips" class="tips-list-large"></ul>
+                </div>
+
+                <div class="info-grid-large">
+                    <div class="info-card-large">
+                        <span class="info-icon-large"></span>
+                        <div>
+                            <strong>Kebutuhan Cahaya</strong>
+                            <p id="sunlightNeeds">-</p>
+                        </div>
+                    </div>
+                    <div class="info-card-large">
+                        <span class="info-icon-large"></span>
+                        <div>
+                            <strong>Suhu Ideal</strong>
+                            <p id="idealTemp">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="health-status-section-large">
+                    <span class="status-label">Status Kesehatan:</span>
+                    <span id="healthStatus" class="health-badge-large">-</span>
+                </div>
+
+                <div id="urgentSection" class="urgent-box-large" style="display: none;">
+                    <div class="urgent-header">
+                        <span class="urgent-icon"></span>
+                        <strong>Tindakan Segera!</strong>
+                    </div>
+                    <p id="urgentAction">-</p>
+                </div>
+            </div>
+
+            <div id="aiLoading" class="loading-large" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>AI sedang mengidentifikasi dan menganalisis tanaman Anda...</p>
+                <div class="loading-dots">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="dashboard">
+            <div class="card chart-card">
+                <h2><span class="icon"></span> Grafik Kelembaban</h2>
+                <div class="chart-container">
+                    <canvas id="moistureChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <h2><span class="icon"></span> ML Predictions</h2>
+                <div class="chart-container">
+                    <canvas id="mlChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI History -->
+        <div class="card">
+            <h2>Riwayat Analisis AI</h2>
+            <div id="aiHistory" class="history-container">
+                <p class="empty-state">Belum ada analisis</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let moistureChart, mlChart;
+
+        const plantEmojis = {
+            'tomat': '🍅', 'tomato': '🍅',
+            'cabai': '🌶️', 'chili': '🌶️', 'chilli': '🌶️',
+            'selada': '🥬', 'lettuce': '🥬',
+            'kemangi': '🌿', 'basil': '🌿',
+            'mint': '🌱',
+            'kaktus': '🌵', 'cactus': '🌵',
+            'anggrek': '🌸', 'orchid': '🌸',
+            'lidah mertua': '🪴', 'snake plant': '🪴',
+            'stroberi': '🍓', 'strawberry': '🍓',
+            'mawar': '🌹', 'rose': '🌹',
+            'pohon': '🌳', 'tree': '🌳',
+            'bunga': '🌺', 'flower': '🌺',
+        };
+
+        function getPlantEmoji(plantName) {
+            const name = plantName.toLowerCase();
+            for (const [key, emoji] of Object.entries(plantEmojis)) {
+                if (name.includes(key)) return emoji;
+            }
+            return '🌱';
+        }
+
+        function initCharts() {
+            const ctx1 = document.getElementById('moistureChart').getContext('2d');
+            moistureChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Kelembaban (%)',
+                        data: [],
+                        borderColor: '#22c55e',
+                        backgroundColor: 'rgba(34, 197, 94, 0.12)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 100 } }
+                }
+            });
+
+            const ctx2 = document.getElementById('mlChart').getContext('2d');
+            mlChart = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Prediction Score',
+                        data: [],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 1 } }
+                }
+            });
+        }
+
+        async function fetchSensorData() {
+            try {
+                const response = await fetch(`${API_URL}/sensor/latest`);
+                const data = await response.json();
+                if (data.moisture !== undefined) {
+                    document.getElementById('moistureValue').textContent = data.moisture;
+                    document.getElementById('moistureFill').style.width = data.moisture + '%';
+                    document.getElementById('pumpStatus').textContent = 
+                        data.pump_status === 'on' ? '🟢 Menyala' : '🔴 Mati';
+                    document.getElementById('statusBadge').textContent = 'Online';
+                    // document.getElementById('statusBadge').className = 'status-badge status-online';
+                    document.getElementById('statusBadge').style.background = '#3b82f6';
+                    document.getElementById('lastUpdate').textContent = 
+                        new Date().toLocaleTimeString('id-ID');
+                }
+                
+                // Update DHT sensor data
+                if (data.temperature !== undefined && data.temperature !== null) {
+                    document.getElementById('temperatureValue').textContent = 
+                        data.temperature.toFixed(1) + '°C';
+                    document.getElementById('dhtStatus').innerHTML = 
+                        '<span class="status-badge status-online">Online</span>';
+                } else {
+                    document.getElementById('temperatureValue').textContent = '--';
+                }
+                
+                if (data.air_humidity !== undefined && data.air_humidity !== null) {
+                    document.getElementById('humidityValue').textContent = 
+                        data.air_humidity.toFixed(1) + '%';
+                } else {
+                    document.getElementById('humidityValue').textContent = '--';
+                }
+                
+                // If no DHT data, show offline
+                if ((data.temperature === undefined || data.temperature === null) && 
+                    (data.air_humidity === undefined || data.air_humidity === null)) {
+                    document.getElementById('dhtStatus').innerHTML = 
+                        '<span class="status-badge status-offline">Sensor tidak tersedia</span>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('statusBadge').className = 'status-badge status-offline';
+                document.getElementById('dhtStatus').innerHTML = 
+                    '<span class="status-badge status-offline">Error</span>';
+            }
+        }
+
+        async function fetchMLPredictions() {
+            try {
+                const response = await fetch(`${API_URL}/ml/predictions?limit=20`);
+                const predictions = await response.json();
+                if (predictions.length > 0) {
+                    const latest = predictions[predictions.length - 1];
+                    document.getElementById('mlStatus').style.display = 'none';
+                    document.getElementById('mlDetails').style.display = 'block';
+                    document.getElementById('mlScore').textContent = latest.score.toFixed(3);
+                    const score = (latest.score * 100).toFixed(1);
+                    document.getElementById('mlProgress').style.width = score + '%';
+                    document.getElementById('mlProgressText').textContent = score + '%';
+                    document.getElementById('mlProgress').style.background = 
+                        latest.needs_water ? 
+                        'linear-gradient(90deg, #ef4444, #dc2626)' : 
+                        'linear-gradient(90deg, #10b981, #059669)';
+                    document.querySelector('.recommendation-icon').textContent = 
+                        latest.needs_water ? '' : '';
+                    document.getElementById('mlRecommendationText').textContent = 
+                        latest.needs_water ? 
+                        `Perlu disiram! (${latest.confidence.toFixed(1)}%)` :
+                        `Cukup air (${latest.confidence.toFixed(1)}%)`;
+                    
+                    mlChart.data.labels = predictions.map((p, i) => 
+                        i === predictions.length - 1 ? 'Now' : `-${predictions.length - i}`
+                    );
+                    mlChart.data.datasets[0].data = predictions.map(p => p.score);
+                    mlChart.update();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function fetchNextWateringSchedule() {
+            try {
+                const response = await fetch(`${API_URL}/ml/next-watering`);
+                const data = await response.json();
+                
+                if (data.success && data.next_watering) {
+                    document.getElementById('scheduleStatus').style.display = 'none';
+                    document.getElementById('scheduleDetails').style.display = 'block';
+                    
+                    const nextWatering = data.next_watering;
+                    
+                    // Format waktu tersisa
+                    const timeUntil = nextWatering.time_until.readable;
+                    document.getElementById('timeUntil').textContent = timeUntil;
+                    
+                    // Format tanggal dan waktu
+                    document.getElementById('scheduleDate').textContent = nextWatering.readable_date;
+                    
+                    // Tampilkan waktu tersisa sebagai nilai utama
+                    document.getElementById('scheduleTimeValue').textContent = timeUntil;
+                    document.getElementById('scheduleTimeLabel').textContent = 'Jadwal Penyiraman Berikutnya';
+                    
+                    // Info tambahan
+                    document.getElementById('moistureAtTime').textContent = 
+                        nextWatering.moisture_at_time + '%';
+                    document.getElementById('scheduleConfidence').textContent = 
+                        nextWatering.confidence + '%';
+                    
+                    // Status saat ini
+                    const currentPred = data.current_prediction;
+                    const currentStatus = currentPred.needs_water ? 
+                        'Perlu Disiram Sekarang' : 'Cukup Air';
+                    const statusClass = currentPred.needs_water ? 'status-urgent' : 'status-ok';
+                    document.getElementById('currentPredictionStatus').textContent = currentStatus;
+                    document.getElementById('currentPredictionStatus').className = 
+                        'status-badge-small ' + statusClass;
+                } else {
+                    document.getElementById('scheduleStatus').style.display = 'block';
+                    document.getElementById('scheduleDetails').style.display = 'none';
+                    document.getElementById('scheduleStatus').innerHTML = 
+                        '<div class="schedule-status-icon"></div><div>Data tidak tersedia</div>';
+                }
+            } catch (error) {
+                console.error('Error fetching next watering schedule:', error);
+                document.getElementById('scheduleStatus').style.display = 'block';
+                document.getElementById('scheduleDetails').style.display = 'none';
+                document.getElementById('scheduleStatus').innerHTML = 
+                    '<div class="schedule-status-icon"></div><div>Error: ' + error.message + '</div>';
+            }
+        }
+
+        async function fetchHistory() {
+            try {
+                const response = await fetch(`${API_URL}/sensor/history?limit=50`);
+                const history = await response.json();
+                if (history.length > 0) {
+                    const labels = history.map((d, i) => 
+                        i === history.length - 1 ? 'Now' : `-${history.length - i}m`
+                    );
+                    const values = history.map(d => d.moisture);
+                    moistureChart.data.labels = labels;
+                    moistureChart.data.datasets[0].data = values;
+                    moistureChart.update();
+                    const avg = values.reduce((a, b) => a + b, 0) / values.length;
+                    document.getElementById('avgMoisture').textContent = avg.toFixed(1) + '%';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function fetchWateringStats() {
+            try {
+                const response = await fetch(`${API_URL}/watering/stats`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateWateringDisplay(data);
+                }
+            } catch (error) {
+                console.error('Error fetching watering stats:', error);
+            }
+        }
+
+        function updateWateringDisplay(data) {
+            const days = parseFloat(data.time_since.days);
+            const hours = parseFloat(data.time_since.hours);
+            const minutes = data.time_since.minutes;
+
+            let timeAgoText = '';
+            let iconEmoji = '';
+            let statusClass = '';
+
+            if (days >= 1) {
+                const dayCount = Math.floor(days);
+                const hourRemainder = Math.floor((days - dayCount) * 24);
+                timeAgoText = `${dayCount} hari ${hourRemainder} jam yang lalu`;
+                iconEmoji = days >= 3 ? '' : days >= 2 ? '' : '';
+                statusClass = days >= 3 ? 'status-urgent' : days >= 2 ? 'status-warning' : 'status-ok';
+            } else if (hours >= 1) {
+                const hourCount = Math.floor(hours);
+                const minRemainder = Math.floor((hours - hourCount) * 60);
+                timeAgoText = `${hourCount} jam ${minRemainder} menit yang lalu`;
+                iconEmoji = '';
+                statusClass = 'status-ok';
+            } else {
+                timeAgoText = `${minutes} menit yang lalu`;
+                iconEmoji = '';
+                statusClass = 'status-fresh';
+            }
+
+            document.getElementById('wateringIcon').textContent = iconEmoji;
+            document.getElementById('timeAgo').textContent = timeAgoText;
+            document.getElementById('timeAgo').className = 'watering-time-ago ' + statusClass;
+            
+            const exactDate = new Date(data.last_watering.date);
+            document.getElementById('exactTime').textContent = exactDate.toLocaleString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            document.getElementById('daysSince').textContent = days.toFixed(1);
+            document.getElementById('hoursSince').textContent = hours.toFixed(1);
+        }
+
+        async function updateWateringNow() {
+            if (!confirm('Tandai tanaman sudah disiram sekarang?')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/watering/manual`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Berhasil! Waktu penyiraman diperbarui.');
+                    fetchWateringStats();
+                } else {
+                    alert('Gagal memperbarui waktu penyiraman');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function waterPlant() {
+            try {
+                await fetch(`${API_URL}/control/pump`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'on', duration: 5000 })
+                });
+                alert('Pompa dinyalakan!');
+                setTimeout(fetchWateringStats, 1000);
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function stopPump() {
+            try {
+                await fetch(`${API_URL}/control/pump`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'off' })
+                });
+                alert('Pompa dimatikan!');
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function getAIAdvice() {
+            const plantName = document.getElementById('plantNameInput').value.trim();
+            
+            if (!plantName) {
+                alert('Mohon isi nama tanaman Anda terlebih dahulu!');
+                document.getElementById('plantNameInput').focus();
+                return;
+            }
+
+            document.getElementById('aiLoading').style.display = 'block';
+            document.getElementById('aiResult').style.display = 'none';
+            
+            try {
+                const historyResp = await fetch(`${API_URL}/sensor/history?limit=24`);
+                const history = await historyResp.json();
+                const latestResp = await fetch(`${API_URL}/sensor/latest`);
+                const latest = await latestResp.json();
+                
+                const response = await fetch(`${API_URL}/ai/advice`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        moisture: latest.moisture,
+                        history: history.map(h => h.moisture),
+                        plant_name: plantName
+                    })
+                });
+                
+                const advice = await response.json();
+                
+                if (advice.success) {
+                    document.getElementById('aiResult').style.display = 'block';
+                    
+                    const emoji = getPlantEmoji(advice.plant_identified || plantName);
+                    document.getElementById('plantEmoji').textContent = emoji;
+                    document.getElementById('plantIdentified').textContent = 
+                        advice.plant_identified || plantName;
+                    
+                    document.getElementById('moistureAnalysis').textContent = 
+                        advice.moisture_analysis || '-';
+                    document.getElementById('optimalRange').textContent = 
+                        advice.optimal_moisture_range || '-';
+                    
+                    document.getElementById('recommendation').textContent = 
+                        advice.recommendation || '-';
+                    document.getElementById('wateringSchedule').textContent = 
+                        advice.watering_schedule || '-';
+                    
+                    const tipsList = document.getElementById('careTips');
+                    tipsList.innerHTML = '';
+                    if (advice.tips && advice.tips.length > 0) {
+                        advice.tips.forEach(tip => {
+                            const li = document.createElement('li');
+                            li.textContent = tip;
+                            tipsList.appendChild(li);
+                        });
+                    }
+                    
+                    document.getElementById('sunlightNeeds').textContent = 
+                        advice.sunlight_needs || '-';
+                    document.getElementById('idealTemp').textContent = 
+                        advice.ideal_temperature || '-';
+                    
+                    const healthBadge = document.getElementById('healthStatus');
+                    healthBadge.textContent = advice.health_status || '-';
+                    healthBadge.className = 'health-badge-large health-' + 
+                        (advice.health_status || '').toLowerCase().replace(' ', '-');
+                    
+                    if (advice.urgent_action) {
+                        document.getElementById('urgentSection').style.display = 'block';
+                        document.getElementById('urgentAction').textContent = advice.urgent_action;
+                    } else {
+                        document.getElementById('urgentSection').style.display = 'none';
+                    }
+                    
+                    fetchAIHistory();
+                } else {
+                    alert('Error: ' + (advice.error || 'Unknown error'));
+                }
+                
+            } catch (error) {
+                alert('Gagal mendapatkan saran AI: ' + error.message);
+            } finally {
+                document.getElementById('aiLoading').style.display = 'none';
+            }
+        }
+
+        async function fetchAIHistory() {
+            try {
+                const response = await fetch(`${API_URL}/ai/history?limit=5`);
+                const history = await response.json();
+                
+                const container = document.getElementById('aiHistory');
+                
+                if (history.length === 0) {
+                    container.innerHTML = '<p class="empty-state">Belum ada analisis</p>';
+                    return;
+                }
+                
+                container.innerHTML = history.reverse().map(item => {
+                    const time = new Date(item.generated_at).toLocaleString('id-ID');
+                    const emoji = getPlantEmoji(item.plant_name || '');
+                    
+                    return `
+                        <div class="history-item">
+                            <div class="history-header">
+                                <span class="history-emoji">${emoji}</span>
+                                <span class="history-plant">${item.plant_name || 'Unknown'}</span>
+                                <span class="history-time">${time}</span>
+                            </div>
+                            <p class="history-rec">${item.recommendation}</p>
+                            <span class="history-status">${item.health_status}</span>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        document.getElementById('autoMode').addEventListener('change', async (e) => {
+            try {
+                await fetch(`${API_URL}/control/mode`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ auto: e.target.checked })
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
+        // Initialize
+        initCharts();
+        fetchSensorData();
+        fetchHistory();
+        fetchMLPredictions();
+        fetchAIHistory();
+        fetchWateringStats();
+        fetchNextWateringSchedule();
+
+        // Refresh intervals
+        setInterval(fetchSensorData, 5000);
+        setInterval(fetchHistory, 30000);
+        setInterval(fetchMLPredictions, 5000);
+        setInterval(fetchWateringStats, 60000);
+        setInterval(fetchNextWateringSchedule, 60000); // Update setiap 1 menit
+    </script>
+</body>
+</html>
