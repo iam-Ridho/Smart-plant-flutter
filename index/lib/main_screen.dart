@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:index/widgets/AppTitle.dart';
 import 'package:index/widgets/cards/helper/list_card.dart';
 
@@ -7,7 +8,11 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: _buildAppBar(), body: _buildBody(context), backgroundColor: const Color(0xFFF6F8FB),);
+    return Scaffold(
+      appBar: _buildAppBar(),
+      body: _buildBody(context),
+      backgroundColor: const Color(0xFFF6F8FB),
+    );
   }
 
   PreferredSizeWidget _buildAppBar() {
@@ -34,20 +39,25 @@ class _MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: const EdgeInsets.all(12),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        childAspectRatio: 1.1,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: StaggeredGrid.count(
+          crossAxisCount: 2,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          children: items.map((item) {
+            return StaggeredGridTile.fit(
+              crossAxisCellCount: item.span,
+              child: item.widget,
+            );
+          }).toList(),
+        ),
       ),
-      itemCount: cards.length,
-      itemBuilder: (context, index) => cards[index],
     );
-
   }
 }
+
 
 class _TabletLayout extends StatelessWidget {
   const _TabletLayout({super.key});

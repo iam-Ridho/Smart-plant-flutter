@@ -4,24 +4,26 @@ import 'package:index/widgets/cards/display_card/parts/display_header.dart';
 
 class DisplayCard extends StatelessWidget {
   final String title;
-  final String value;
+  final String? value;
   final String? subtitle;
   final Color headerColor;
   final TextStyle? valueStyle;
   final TextStyle? subtitleStyle;
   final Widget? headerTrailing;
   final VoidCallback? onTap;
+  final Widget? child;
 
   const DisplayCard({
     super.key,
     required this.title,
-    required this.value,
+    this.value,
     this.subtitle,
     this.headerColor = Colors.green,
     this.valueStyle,
     this.subtitleStyle,
     this.headerTrailing,
     this.onTap,
+    this.child
   });
 
   @override
@@ -55,7 +57,7 @@ class DisplayCard extends StatelessWidget {
               onTap: onTap,
             ),
 
-            const SizedBox(height: 4,),
+            const SizedBox(height: 4),
 
             //Content
             DisplayContent(
@@ -63,8 +65,8 @@ class DisplayCard extends StatelessWidget {
               subtitle: subtitle,
               valueStyle: valueStyle,
               subtitleStyle: subtitleStyle,
+              child: child,
             ),
-
           ],
         ),
       ),

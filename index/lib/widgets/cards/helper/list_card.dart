@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:index/widgets/cards/ai_analysis.dart';
+import 'package:index/widgets/cards/control_pump.dart';
 import 'package:index/widgets/cards/humidity.dart';
 import 'package:index/widgets/cards/ml_prediction.dart';
 import 'package:index/widgets/cards/moisture.dart';
@@ -20,9 +22,10 @@ final items = [
   DashboardItem(HumidityCard(), 1),
   DashboardItem(MoistureCard(), 1),
   DashboardItem(MLPrediction(), 1),
-  DashboardItem(WateringStatus(), 1),
   DashboardItem(WateringTime(), 1),
-  DashboardItem(MoistureCard(), 2),
+  DashboardItem(WateringStatus(), 1),
+  DashboardItem(ControlPump(), 2),
+  DashboardItem(AiAnalysis(), 2)
 ];
 
 class DashboardItem {

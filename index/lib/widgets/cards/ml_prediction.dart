@@ -11,6 +11,7 @@ class MLPrediction extends StatelessWidget {
       title: 'ML Prediction',
       value: '0.015%',
       headerTrailing: Icon(Icons.insert_chart, color: Colors.deepOrangeAccent),
+      subtitle: 'Normal',
     );
   }
 }
