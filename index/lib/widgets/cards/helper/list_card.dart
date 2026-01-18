@@ -17,6 +17,11 @@ final List<Widget> cards = [
   WateringTime(),
 ];
 
+final List<Widget> fullWidthCards = [
+  ControlPump(),
+  AiAnalysis()
+];
+
 final items = [
   DashboardItem(TemperatureCard(), 1),
   DashboardItem(HumidityCard(), 1),

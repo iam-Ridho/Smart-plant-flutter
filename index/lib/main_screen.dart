@@ -39,25 +39,41 @@ class _MobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: StaggeredGrid.count(
-          crossAxisCount: 2,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          children: items.map((item) {
-            return StaggeredGridTile.fit(
-              crossAxisCellCount: item.span,
-              child: item.widget,
-            );
-          }).toList(),
+    return CustomScrollView(
+      slivers: [
+
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+          sliver: SliverMasonryGrid(
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) => cards[index],
+              childCount: cards.length,
+            ),
+            gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+            ),
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+          ),
         ),
-      ),
+
+        SliverPadding(
+          padding: const EdgeInsets.all(12),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: fullWidthCards[index],
+              ),
+              childCount: fullWidthCards.length,
+            ),
+          ),
+        ),
+
+      ],
     );
   }
 }
-
 
 class _TabletLayout extends StatelessWidget {
   const _TabletLayout({super.key});
